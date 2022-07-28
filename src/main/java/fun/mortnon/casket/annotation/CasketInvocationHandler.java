@@ -6,6 +6,9 @@ import fun.mortnon.casket.operator.SelectOperator;
 import javax.sql.DataSource;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.List;
 
 /**
  * @author Moon Wu
@@ -23,12 +26,16 @@ public class CasketInvocationHandler extends AbstractInvocationHandler {
 
     @Override
     protected Object handleInvocation(Object proxy, Method method, Object[] args) throws Throwable {
-        Annotation[] annotations = method.getAnnotations();
         if (method.isAnnotationPresent(Select.class)) {
             Select selectAnno = method.getAnnotation(Select.class);
             String column = selectAnno.column();
             Operator operator = selectAnno.operator();
-            Class<?> entityClz = selectAnno.entity();
+            Class<?> entityClz = method.getReturnType();
+            if (entityClz == List.class) {
+                Type type = ((ParameterizedType) method.getGenericReturnType()).getActualTypeArguments()[0];
+                entityClz = (Class)type;
+            }
+
             SelectOperator selectOperator = new SelectOperator(dataSource, operator);
             if (args.length == 1) {
                 return selectOperator.select(column, args[0], entityClz);

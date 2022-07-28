@@ -41,6 +41,7 @@ class OperatorContextTest {
 
         List<User> awu = userDAO.select("1");
         assertEquals(1, awu.size());
+        assertEquals("awu", awu.get(0).getName());
     }
 
     static class TestDataSource implements DataSource {

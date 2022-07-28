@@ -21,13 +21,6 @@ public @interface Select {
     String column();
 
     /**
-     * 操作的实体类
-     *
-     * @return
-     */
-    Class<?> entity();
-
-    /**
      * 查询条件
      *
      * @return

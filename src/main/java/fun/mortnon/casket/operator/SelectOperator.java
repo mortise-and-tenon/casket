@@ -1,9 +1,8 @@
 package fun.mortnon.casket.operator;
 
 import fun.mortnon.casket.common.Operator;
-import fun.mortnon.casket.extractor.ListExtractor;
+import fun.mortnon.casket.extractor.BaseResultSetExtractor;
 import fun.mortnon.casket.extractor.ResultSetExtractor;
-import fun.mortnon.casket.extractor.convertor.BaseDataConvertor;
 import fun.mortnon.casket.extractor.sql.BoundSql;
 import fun.mortnon.casket.reflect.Reflection;
 import org.apache.commons.lang3.StringUtils;
@@ -38,7 +37,7 @@ public class SelectOperator<T> {
     public <T> List<T> select(String column, Object data, Class<T> clazz) throws SQLException {
         BoundSql boundSql = analyze(column, data, clazz);
         ResultSet resultSet = new DatabaseExecutor(dataSource).select(boundSql);
-        ResultSetExtractor extractor = new ListExtractor(new BaseDataConvertor(clazz));
+        ResultSetExtractor extractor = new BaseResultSetExtractor();
         return extractor.extract(resultSet, clazz);
     }
 
@@ -68,7 +67,7 @@ public class SelectOperator<T> {
             parameters.add(data);
             condition.append("?");
         } else {
-            parameters.add(Reflection.getColumnValue(column, clazz));
+            parameters.add(Reflection.getColumnValue(column, data));
             condition.append("?");
         }
 

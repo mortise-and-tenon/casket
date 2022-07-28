@@ -12,6 +12,6 @@ import java.util.List;
  */
 @Casket
 public interface UserDAO {
-    @Select(column = "id", entity = User.class)
+    @Select(column = "id")
     List<User> select(String name);
 }
