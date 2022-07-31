@@ -6,6 +6,8 @@ import fun.mortnon.casket.reflect.Reflection;
 import javax.sql.DataSource;
 
 /**
+ * 实现用户定义的数据库操作接口生成代理实现
+ *
  * @author Moon Wu
  * @date 2022/7/25
  */

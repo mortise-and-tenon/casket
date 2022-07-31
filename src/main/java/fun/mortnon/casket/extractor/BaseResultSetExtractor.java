@@ -3,7 +3,9 @@ package fun.mortnon.casket.extractor;
 import fun.mortnon.casket.extractor.convertor.AbstractBaseRowConvertor;
 import fun.mortnon.casket.extractor.convertor.InstanceRowConvertor;
 import fun.mortnon.casket.extractor.convertor.RowConvertor;
+import fun.mortnon.casket.extractor.convertor.TypeRowConvertor;
 
+import java.lang.reflect.Type;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -21,9 +23,14 @@ public class BaseResultSetExtractor<T> implements ResultSetExtractor {
     }
 
     @Override
-    public <T> List<T> extract(ResultSet rs, Class<T> clazz) throws SQLException {
+    public <T> List<T> extract(ResultSet rs, Class<T> returnClazz) throws SQLException {
         List<T> list = new ArrayList<>();
-        RowConvertor<T> convertor = new InstanceRowConvertor<>(clazz);
+        RowConvertor<T> convertor;
+        if (returnClazz instanceof Type) {
+            convertor = new TypeRowConvertor<>(returnClazz);
+        } else {
+            convertor = new InstanceRowConvertor<>(returnClazz);
+        }
         while (rs.next()) {
             T data = convertor.convert(rs);
             list.add(data);

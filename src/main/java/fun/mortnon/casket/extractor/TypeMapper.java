@@ -1,5 +1,8 @@
 package fun.mortnon.casket.extractor;
 
+import com.mysql.cj.protocol.Resultset;
+import org.apache.commons.lang3.StringUtils;
+
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -96,6 +99,10 @@ public enum TypeMapper {
 
     INTEGER(Integer.class, (rs, column) -> {
         try {
+            if (StringUtils.isEmpty(column)) {
+                return rs.getInt(1);
+            }
+
             return rs.getInt(column);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -141,6 +148,9 @@ public enum TypeMapper {
 
     STRING(String.class, (rs, column) -> {
         try {
+            if (StringUtils.isEmpty(column)) {
+                return rs.getString(1);
+            }
             return rs.getString(column);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -176,6 +186,10 @@ public enum TypeMapper {
     public static Object grab(Class<?> clazz, ResultSet rs, String column) {
         return Arrays.stream(TypeMapper.values()).filter(k -> k.clazz == clazz).findFirst().orElse(STRING)
                 .grabData(rs, column);
+    }
+
+    public static Object grab(Class<?> clazz, ResultSet rs) {
+        return grab(clazz, rs, null);
     }
 
     private Object grabData(ResultSet rs, String column) {

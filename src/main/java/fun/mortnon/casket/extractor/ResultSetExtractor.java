@@ -15,9 +15,9 @@ public interface ResultSetExtractor {
      * 解析结果，将结果映射为List
      *
      * @param rs
-     * @param clazz
+     * @param returnClazz
      * @return
      * @throws SQLException
      */
-    <T> List<T> extract(ResultSet rs, Class<T> clazz) throws SQLException;
+    <T> List<T> extract(ResultSet rs, Class<T> returnClazz) throws SQLException;
 }

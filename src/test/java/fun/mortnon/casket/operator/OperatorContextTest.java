@@ -44,6 +44,38 @@ class OperatorContextTest {
         assertEquals("awu", awu.get(0).getName());
     }
 
+    @Test
+    public void testSelectAll() {
+        OperatorContext operatorContext = new OperatorContext(new TestDataSource());
+        UserDAO userDAO = operatorContext.create(UserDAO.class);
+        List<User> strings = userDAO.select();
+        assertEquals(2, strings.size());
+    }
+
+    @Test
+    public void testSelect() {
+        OperatorContext operatorContext = new OperatorContext(new TestDataSource());
+        UserDAO userDAO = operatorContext.create(UserDAO.class);
+        List<String> strings = userDAO.selectNameById(1);
+        assertEquals(1, strings.size());
+    }
+
+    @Test
+    public void testSelect2() {
+        OperatorContext operatorContext = new OperatorContext(new TestDataSource());
+        UserDAO userDAO = operatorContext.create(UserDAO.class);
+        List<String> strings = userDAO.selectNameById2(1);
+        assertEquals(1, strings.size());
+    }
+
+    @Test
+    public void testSelect3() {
+        OperatorContext operatorContext = new OperatorContext(new TestDataSource());
+        UserDAO userDAO = operatorContext.create(UserDAO.class);
+        List<Integer> strings = userDAO.selectIdByName("awu");
+        assertEquals(1, strings.size());
+    }
+
     static class TestDataSource implements DataSource {
 
         @Override
