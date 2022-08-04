@@ -15,8 +15,7 @@ import java.sql.SQLFeatureNotSupportedException;
 import java.util.List;
 import java.util.logging.Logger;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Moon Wu
@@ -26,16 +25,18 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 class OperatorContextTest {
 
     private static DataSource dataSource;
+    private static OperatorContext operatorContext;
+    private static UserDAO userDAO;
 
     @BeforeAll
     public static void init() {
         dataSource = new TestDataSource();
+        operatorContext = new OperatorContext(new TestDataSource());
+        userDAO = operatorContext.create(UserDAO.class);
     }
 
     @Test
     public void testAnno() {
-        OperatorContext operatorContext = new OperatorContext(new TestDataSource());
-        UserDAO userDAO = operatorContext.create(UserDAO.class);
         List<User> haha = userDAO.select("haha");
         assertEquals(0, haha.size());
 
@@ -46,34 +47,33 @@ class OperatorContextTest {
 
     @Test
     public void testSelectAll() {
-        OperatorContext operatorContext = new OperatorContext(new TestDataSource());
-        UserDAO userDAO = operatorContext.create(UserDAO.class);
         List<User> strings = userDAO.select();
         assertEquals(2, strings.size());
     }
 
     @Test
     public void testSelect() {
-        OperatorContext operatorContext = new OperatorContext(new TestDataSource());
-        UserDAO userDAO = operatorContext.create(UserDAO.class);
         List<String> strings = userDAO.selectNameById(1);
         assertEquals(1, strings.size());
     }
 
     @Test
     public void testSelect2() {
-        OperatorContext operatorContext = new OperatorContext(new TestDataSource());
-        UserDAO userDAO = operatorContext.create(UserDAO.class);
         List<String> strings = userDAO.selectNameById2(1);
         assertEquals(1, strings.size());
     }
 
     @Test
     public void testSelect3() {
-        OperatorContext operatorContext = new OperatorContext(new TestDataSource());
-        UserDAO userDAO = operatorContext.create(UserDAO.class);
         List<Integer> strings = userDAO.selectIdByName("awu");
         assertEquals(1, strings.size());
+    }
+
+    @Test
+    public void testSelect4() {
+        User awu = userDAO.selectOne("awu");
+        assertNotNull(awu);
+        assertEquals("awu", awu.getName());
     }
 
     static class TestDataSource implements DataSource {

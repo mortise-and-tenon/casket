@@ -54,4 +54,9 @@ public interface Constants {
      * 逗号
      */
     char COMMA = ',';
+
+    /**
+     * 用于类的类型的字段名称
+     */
+    String FIELD_TYPE = "TYPE";
 }

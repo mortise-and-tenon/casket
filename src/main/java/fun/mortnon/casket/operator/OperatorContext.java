@@ -1,6 +1,7 @@
 package fun.mortnon.casket.operator;
 
 import fun.mortnon.casket.annotation.CasketInvocationHandler;
+import fun.mortnon.casket.annotation.Dao;
 import fun.mortnon.casket.reflect.Reflection;
 
 import javax.sql.DataSource;
@@ -35,9 +36,9 @@ public class OperatorContext {
             throw new IllegalArgumentException("expected an interface to proxy, but " + daoClass);
         }
 
-        fun.mortnon.casket.annotation.Casket casketAnno = daoClass.getAnnotation(fun.mortnon.casket.annotation.Casket.class);
+        Dao daoAnno = daoClass.getAnnotation(Dao.class);
 
-        if (casketAnno == null) {
+        if (daoAnno == null) {
             throw new IllegalStateException("interface expected one @Operator annotation but not found");
         }
 

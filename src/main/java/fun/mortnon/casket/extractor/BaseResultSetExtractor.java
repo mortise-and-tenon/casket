@@ -4,7 +4,9 @@ import fun.mortnon.casket.extractor.convertor.AbstractBaseRowConvertor;
 import fun.mortnon.casket.extractor.convertor.InstanceRowConvertor;
 import fun.mortnon.casket.extractor.convertor.RowConvertor;
 import fun.mortnon.casket.extractor.convertor.TypeRowConvertor;
+import fun.mortnon.casket.reflect.Reflection;
 
+import javax.lang.model.type.PrimitiveType;
 import java.lang.reflect.Type;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,7 +28,7 @@ public class BaseResultSetExtractor<T> implements ResultSetExtractor {
     public <T> List<T> extract(ResultSet rs, Class<T> returnClazz) throws SQLException {
         List<T> list = new ArrayList<>();
         RowConvertor<T> convertor;
-        if (returnClazz instanceof Type) {
+        if (Reflection.isBasicType(returnClazz) || returnClazz == String.class) {
             convertor = new TypeRowConvertor<>(returnClazz);
         } else {
             convertor = new InstanceRowConvertor<>(returnClazz);
@@ -37,4 +39,21 @@ public class BaseResultSetExtractor<T> implements ResultSetExtractor {
         }
         return list;
     }
+
+    @Override
+    public <T> T extractOne(ResultSet rs, Class<T> returnClazz) throws SQLException {
+        RowConvertor<T> convertor;
+        if (Reflection.isBasicType(returnClazz) || returnClazz == String.class) {
+            convertor = new TypeRowConvertor<>(returnClazz);
+        } else {
+            convertor = new InstanceRowConvertor<>(returnClazz);
+        }
+        while (rs.next()) {
+            T data = convertor.convert(rs);
+            return data;
+        }
+        return null;
+    }
+
+
 }

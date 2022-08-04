@@ -20,4 +20,6 @@ public interface ResultSetExtractor {
      * @throws SQLException
      */
     <T> List<T> extract(ResultSet rs, Class<T> returnClazz) throws SQLException;
+
+    <T> T extractOne(ResultSet rs, Class<T> returnClazz) throws SQLException;
 }

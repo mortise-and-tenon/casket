@@ -9,7 +9,7 @@ import java.lang.annotation.*;
 @Documented
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Casket {
+public @interface Dao {
     /**
      * 数据操作对应的表
      * 优先级低于函数上的表名声明

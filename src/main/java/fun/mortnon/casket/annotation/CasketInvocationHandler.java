@@ -8,7 +8,6 @@ import javax.sql.DataSource;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,8 +27,8 @@ public class CasketInvocationHandler extends AbstractInvocationHandler {
 
     @Override
     protected Object handleInvocation(Object proxy, Method method, Object[] args) throws Throwable {
-        Casket casketAnno = daoClass.getAnnotation(Casket.class);
-        String tableName = casketAnno.table();
+        Dao daoAnno = daoClass.getAnnotation(Dao.class);
+        String tableName = daoAnno.table();
 
         if (method.isAnnotationPresent(Select.class)) {
             Select selectAnno = method.getAnnotation(Select.class);
@@ -43,17 +42,19 @@ public class CasketInvocationHandler extends AbstractInvocationHandler {
 
             Operator operator = selectAnno.operator();
             Class<?> returnClazz = method.getReturnType();
+            boolean isList = false;
             if (returnClazz == List.class) {
                 Type type = ((ParameterizedType) method.getGenericReturnType()).getActualTypeArguments()[0];
                 returnClazz = (Class) type;
+                isList = true;
             }
 
             SelectOperator selectOperator = new SelectOperator(dataSource, method, operator);
-            if (args.length == 1) {
-                return selectOperator.select(conditionColumn, args[0], Arrays.asList(selectColumns), returnClazz, tableName);
-            } else {
+            if (isList) {
                 return selectOperator.select(conditionColumn, Arrays.asList(args), Arrays.asList(selectColumns), returnClazz, tableName);
             }
+
+            return selectOperator.selectOne(conditionColumn, Arrays.asList(args), Arrays.asList(selectColumns), returnClazz, tableName);
         }
         return null;
     }

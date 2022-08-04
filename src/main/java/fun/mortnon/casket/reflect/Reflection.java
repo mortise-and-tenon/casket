@@ -9,6 +9,8 @@ import javax.persistence.Table;
 import java.lang.reflect.*;
 import java.util.*;
 
+import static fun.mortnon.casket.common.Constants.FIELD_TYPE;
+
 /**
  * @author Moon Wu
  */
@@ -115,6 +117,25 @@ public class Reflection {
             throw new InstanceException(clazz, "Is it an abstract class?", e);
         } catch (IllegalAccessException e) {
             throw new InstanceException(clazz, "Is the constructor accessible?", e);
+        }
+    }
+
+    /**
+     * 判定当前类型是否为基本数据类型
+     *
+     * @param clazz
+     * @return
+     */
+    public static boolean isBasicType(Class<?> clazz) {
+        if (clazz.isPrimitive()) {
+            return true;
+        }
+
+        try {
+            Field field = clazz.getField(FIELD_TYPE);
+            return ((Class) field.get(null)).isPrimitive();
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            return false;
         }
     }
 }

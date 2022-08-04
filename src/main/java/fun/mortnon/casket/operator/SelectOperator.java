@@ -51,6 +51,14 @@ public class SelectOperator<T> {
         return extractor.extract(resultSet, returnClazz);
     }
 
+    public <T> T selectOne(String conditionColumn, Object conditionData, List<String> selectColumns, Class<T> returnClazz,
+                           String tableName) throws SQLException {
+        BoundSql boundSql = analyze(conditionColumn, conditionData, selectColumns, returnClazz, tableName);
+        ResultSet resultSet = new DatabaseExecutor(dataSource).select(boundSql);
+        ResultSetExtractor extractor = new BaseResultSetExtractor();
+        return extractor.extractOne(resultSet, returnClazz);
+    }
+
     private <T> BoundSql analyze(String conditionColumn, Object conditionData, List<String> selectColumns, Class<T> returnClazz,
                                  String tableName) {
         String fieldsSql = "";
@@ -87,7 +95,7 @@ public class SelectOperator<T> {
 
             condition.append(")");
 
-        } else if (conditionData.getClass() instanceof Type) {
+        } else if (Reflection.isBasicType(conditionData.getClass()) || conditionData.getClass() == String.class) {
             parameters.add(conditionData);
             condition.append("?");
         } else {

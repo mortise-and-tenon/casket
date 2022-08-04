@@ -1,7 +1,7 @@
 package fun.mortnon.casket.operator;
 
 import fun.mortnon.casket.User;
-import fun.mortnon.casket.annotation.Casket;
+import fun.mortnon.casket.annotation.Dao;
 import fun.mortnon.casket.annotation.Select;
 
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.List;
  * @author Moon Wu
  * @date 2022/7/25
  */
-@Casket(table = "user")
+@Dao(table = "user")
 public interface UserDAO {
     @Select
     List<User> select();
@@ -26,4 +26,7 @@ public interface UserDAO {
 
     @Select(conditionColumn = "name", selectColumns = "id")
     List<Integer> selectIdByName(String name);
+
+    @Select(conditionColumn = "name")
+    User selectOne(String name);
 }
