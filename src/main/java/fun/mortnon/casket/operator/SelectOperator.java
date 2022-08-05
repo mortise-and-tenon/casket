@@ -55,6 +55,11 @@ public class SelectOperator<T> {
                            String tableName) throws SQLException {
         BoundSql boundSql = analyze(conditionColumn, conditionData, selectColumns, returnClazz, tableName);
         ResultSet resultSet = new DatabaseExecutor(dataSource).select(boundSql);
+
+        if (null == resultSet) {
+            return null;
+        }
+
         ResultSetExtractor extractor = new BaseResultSetExtractor();
         return extractor.extractOne(resultSet, returnClazz);
     }

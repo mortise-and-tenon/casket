@@ -4,15 +4,14 @@ import java.lang.annotation.*;
 
 /**
  * @author Moon Wu
- * @date 2022/7/25
+ * @date 2022/8/5
  */
 @Documented
-@Target({ElementType.TYPE})
+@Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Dao {
+public @interface Update {
     /**
-     * 数据操作对应的表
-     * 优先级低于函数上的表名声明
+     * 更新对象对应的表名
      *
      * @return
      */

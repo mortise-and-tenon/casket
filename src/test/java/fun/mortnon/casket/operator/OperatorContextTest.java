@@ -1,19 +1,14 @@
 package fun.mortnon.casket.operator;
 
+import fun.mortnon.casket.TestDataSource;
 import fun.mortnon.casket.User;
+import fun.mortnon.casket.exception.DbException;
+import fun.mortnon.casket.orm.SubOperator;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 
 import javax.sql.DataSource;
-import java.io.PrintWriter;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
 import java.util.List;
-import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -31,7 +26,7 @@ class OperatorContextTest {
     @BeforeAll
     public static void init() {
         dataSource = new TestDataSource();
-        operatorContext = new OperatorContext(new TestDataSource());
+        operatorContext = new OperatorContext(dataSource);
         userDAO = operatorContext.create(UserDAO.class);
     }
 
@@ -76,57 +71,16 @@ class OperatorContextTest {
         assertEquals("awu", awu.getName());
     }
 
-    static class TestDataSource implements DataSource {
-
-        @Override
-        public Connection getConnection() throws SQLException {
-            try {
-                Class.forName("com.mysql.cj.jdbc.Driver");
-                return DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/mortnon", "root", "123456");
-            } catch (Exception throwables) {
-                throwables.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        public Connection getConnection(String username, String password) throws SQLException {
-            return null;
-        }
-
-        @Override
-        public <T> T unwrap(Class<T> iface) throws SQLException {
-            return null;
-        }
-
-        @Override
-        public boolean isWrapperFor(Class<?> iface) throws SQLException {
-            return false;
-        }
-
-        @Override
-        public PrintWriter getLogWriter() throws SQLException {
-            return null;
-        }
-
-        @Override
-        public void setLogWriter(PrintWriter out) throws SQLException {
-
-        }
-
-        @Override
-        public void setLoginTimeout(int seconds) throws SQLException {
-
-        }
-
-        @Override
-        public int getLoginTimeout() throws SQLException {
-            return 0;
-        }
-
-        @Override
-        public Logger getParentLogger() throws SQLFeatureNotSupportedException {
-            return null;
-        }
+    @Test
+    public void testSubSelect(){
+        SubOperator subOperator = operatorContext.create(SubOperator.class);
+        List<User> users = subOperator.selectAll();
     }
+
+    @Test
+    public void testWrongCode(){
+        assertThrows(DbException.class,()->userDAO.selectWrong("awu"));
+    }
+
+
 }

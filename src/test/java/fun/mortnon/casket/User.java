@@ -1,15 +1,17 @@
 package fun.mortnon.casket;
 
 
-import java.util.List;
+import javax.persistence.Table;
 
 /**
  * @author Moon Wu
  * @date 2022/7/26
  */
+@Table(name = "user")
 public class User {
     private int id;
     private String name;
+    private UserType type;
 
     public int getId() {
         return id;
@@ -27,8 +29,11 @@ public class User {
         this.name = name;
     }
 
-    enum UserType {
-        User,
-        Admin
+    public UserType getType() {
+        return type;
+    }
+
+    public void setType(UserType type) {
+        this.type = type;
     }
 }

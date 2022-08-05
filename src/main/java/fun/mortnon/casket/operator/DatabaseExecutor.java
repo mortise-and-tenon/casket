@@ -1,5 +1,7 @@
 package fun.mortnon.casket.operator;
 
+import com.mysql.cj.jdbc.ClientPreparedStatement;
+import fun.mortnon.casket.exception.DbException;
 import fun.mortnon.casket.extractor.sql.BoundSql;
 import lombok.extern.slf4j.Slf4j;
 
@@ -44,7 +46,7 @@ public class DatabaseExecutor {
             }
             return preparedStatement.executeQuery();
         } catch (Exception e) {
-            log.error("exec select fail for ", e);
+            DbException.sqlError(e);
         }
         return null;
     }

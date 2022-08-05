@@ -1,15 +1,20 @@
 package fun.mortnon.casket.annotation;
 
-import fun.mortnon.casket.common.Operator;
+import fun.mortnon.casket.exception.DaoExtendException;
 import fun.mortnon.casket.operator.SelectOperator;
+import fun.mortnon.casket.orm.BaseEntityOperator;
 import org.apache.commons.lang3.StringUtils;
+import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
+import sun.reflect.generics.reflectiveObjects.TypeVariableImpl;
 
+import javax.persistence.Table;
 import javax.sql.DataSource;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Moon Wu
@@ -27,8 +32,8 @@ public class CasketInvocationHandler extends AbstractInvocationHandler {
 
     @Override
     protected Object handleInvocation(Object proxy, Method method, Object[] args) throws Throwable {
-        Dao daoAnno = daoClass.getAnnotation(Dao.class);
-        String tableName = daoAnno.table();
+        Operator operatorAnno = daoClass.getAnnotation(Operator.class);
+        String tableName = operatorAnno.table();
 
         if (method.isAnnotationPresent(Select.class)) {
             Select selectAnno = method.getAnnotation(Select.class);
@@ -40,14 +45,30 @@ public class CasketInvocationHandler extends AbstractInvocationHandler {
                 tableName = selectTableName;
             }
 
-            Operator operator = selectAnno.operator();
+            fun.mortnon.casket.common.Operator operator = selectAnno.operator();
             Class<?> returnClazz = method.getReturnType();
             boolean isList = false;
             if (returnClazz == List.class) {
                 Type type = ((ParameterizedType) method.getGenericReturnType()).getActualTypeArguments()[0];
-                returnClazz = (Class) type;
+                if (type instanceof TypeVariableImpl) {
+                    Type[] interfaces = daoClass.getGenericInterfaces();
+                    Type[] operatorType = Arrays.stream(interfaces).filter(k -> ((ParameterizedType) k).getRawType() == BaseEntityOperator.class)
+                            .map(m -> ((ParameterizedTypeImpl) m).getActualTypeArguments())
+                            .findFirst().orElse(null);
+                    if (null == operatorType) {
+                        throw new DaoExtendException(daoClass.getName());
+                    }
+
+                    returnClazz = (Class) operatorType[0];
+                } else {
+                    returnClazz = (Class) type;
+                }
                 isList = true;
             }
+
+            Table tableAnno = returnClazz.getAnnotation(Table.class);
+
+            tableName = Optional.ofNullable(tableAnno).map(Table::name).orElse(tableName);
 
             SelectOperator selectOperator = new SelectOperator(dataSource, method, operator);
             if (isList) {

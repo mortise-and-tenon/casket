@@ -1,8 +1,9 @@
 package fun.mortnon.casket.operator;
 
 import fun.mortnon.casket.User;
-import fun.mortnon.casket.annotation.Dao;
+import fun.mortnon.casket.annotation.Operator;
 import fun.mortnon.casket.annotation.Select;
+import fun.mortnon.casket.annotation.Update;
 
 import java.util.List;
 
@@ -10,7 +11,7 @@ import java.util.List;
  * @author Moon Wu
  * @date 2022/7/25
  */
-@Dao(table = "user")
+@Operator(table = "user")
 public interface UserDAO {
     @Select
     List<User> select();
@@ -29,4 +30,11 @@ public interface UserDAO {
 
     @Select(conditionColumn = "name")
     User selectOne(String name);
+
+    @Select
+    User selectWrong(String name);
+
+    @Update
+    boolean updateUser(User user);
+
 }

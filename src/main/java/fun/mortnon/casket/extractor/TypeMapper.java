@@ -165,6 +165,15 @@ public enum TypeMapper {
             e.printStackTrace();
             return null;
         }
+    }),
+
+    ENUM(Enum.class, (rs, column) -> {
+        try {
+            return rs.getString(column);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
     });
 
     private Class<?> clazz;
