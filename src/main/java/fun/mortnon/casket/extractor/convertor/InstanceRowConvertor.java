@@ -23,9 +23,9 @@ public class InstanceRowConvertor<T> extends AbstractBaseRowConvertor<T> {
         T instance = Reflection.instantiate(mappedClass);
         Map<String, Field> fields = Reflection.getFields(mappedClass);
         fields.forEach((k, v) -> {
-            Object value = TypeMapper.grab(v.getType(), resultSet, k);
+            Object value = fetch(v.getType(), resultSet, k);
             if (v.getType().isEnum() && value.getClass() == String.class) {
-                value = Enum.valueOf((Class<Enum>)v.getType(), (String)value);
+                value = Enum.valueOf((Class<Enum>) v.getType(), (String) value);
             }
 
             try {

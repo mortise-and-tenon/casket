@@ -17,6 +17,6 @@ public class TypeRowConvertor<T> extends AbstractBaseRowConvertor<T> {
 
     @Override
     public T convert(ResultSet resultSet) {
-        return (T) TypeMapper.grab(mappedClass, resultSet);
+        return (T) fetch(mappedClass, resultSet, "");
     }
 }
