@@ -2,6 +2,7 @@ package fun.mortnon.casket.operator;
 
 import fun.mortnon.casket.TestDataSource;
 import fun.mortnon.casket.User;
+import fun.mortnon.casket.UserType;
 import fun.mortnon.casket.exception.DbException;
 import fun.mortnon.casket.orm.SubOperator;
 import org.junit.jupiter.api.BeforeAll;
@@ -68,18 +69,20 @@ class OperatorContextTest {
     public void testSelect4() {
         User awu = userDAO.selectOne("awu");
         assertNotNull(awu);
+        assertEquals(1, awu.getId());
         assertEquals("awu", awu.getName());
+        assertEquals(UserType.Admin, awu.getType());
     }
 
     @Test
-    public void testSubSelect(){
+    public void testSubSelect() {
         SubOperator subOperator = operatorContext.create(SubOperator.class);
         List<User> users = subOperator.selectAll();
     }
 
     @Test
-    public void testWrongCode(){
-        assertThrows(DbException.class,()->userDAO.selectWrong("awu"));
+    public void testWrongCode() {
+        assertThrows(DbException.class, () -> userDAO.selectWrong("awu"));
     }
 
 

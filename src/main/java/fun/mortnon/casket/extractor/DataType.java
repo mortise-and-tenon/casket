@@ -1,20 +1,15 @@
 package fun.mortnon.casket.extractor;
 
-import com.mysql.cj.protocol.Resultset;
-import org.apache.commons.lang3.StringUtils;
-
 import java.sql.Date;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Arrays;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 
 /**
+ * 数据类型与Class映射关系
+ *
  * @author Moon Wu
  * @date 2022/7/28
  */
-public enum TypeMapper {
+public enum DataType {
 
     PRIMITIVE_BOOLEAN(boolean.class),
 
@@ -52,7 +47,7 @@ public enum TypeMapper {
 
     private Class<?> clazz;
 
-    TypeMapper(Class<?> clazz) {
+    DataType(Class<?> clazz) {
         this.clazz = clazz;
     }
 
@@ -60,7 +55,7 @@ public enum TypeMapper {
         return clazz;
     }
 
-    public static TypeMapper valueOfClass(Class<?> clazz) {
-        return Arrays.stream(TypeMapper.values()).filter(k -> k.getDataClass() == clazz).findFirst().orElse(STRING);
+    public static DataType valueOfClass(Class<?> clazz) {
+        return Arrays.stream(DataType.values()).filter(k -> k.getDataClass() == clazz).findFirst().orElse(STRING);
     }
 }

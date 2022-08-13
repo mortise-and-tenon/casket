@@ -1,6 +1,5 @@
 package fun.mortnon.casket.extractor.convertor;
 
-import fun.mortnon.casket.extractor.TypeMapper;
 import fun.mortnon.casket.reflect.Reflection;
 
 import java.lang.reflect.Field;
@@ -10,6 +9,8 @@ import java.sql.ResultSet;
 import java.util.Map;
 
 /**
+ * 数据库行对应实体数据转换器
+ *
  * @author Moon Wu
  * @date 2022/7/25
  */

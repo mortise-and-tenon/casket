@@ -3,6 +3,8 @@ package fun.mortnon.casket.extractor.convertor;
 import java.sql.ResultSet;
 
 /**
+ * 数据库行与数据的转换器接口
+ *
  * @author Moon Wu
  * @date 2022/7/25
  */

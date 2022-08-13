@@ -1,7 +1,5 @@
 package fun.mortnon.casket.extractor.convertor;
 
-import fun.mortnon.casket.extractor.TypeMapper;
-
 import java.sql.ResultSet;
 
 /**

@@ -3,6 +3,10 @@ package fun.mortnon.casket.extractor;
 import fun.mortnon.casket.extractor.fetcher.*;
 
 /**
+ * 数据获取器工厂类
+ * 用于生成Java数据的Class对应的数据库类型的获取器
+ * 获取器可以按相应类型获取查询结果中的列数据
+ *
  * @author Moon Wu
  * @date 2022/8/5
  */
@@ -14,7 +18,7 @@ public class TypeFetcherFactory {
 
 
     public TypeFetcher build(Class<?> dataClazz) {
-        TypeMapper type = TypeMapper.valueOfClass(dataClazz);
+        DataType type = DataType.valueOfClass(dataClazz);
         switch (type) {
             case PRIMITIVE_BOOLEAN:
             case BOOLEAN:
