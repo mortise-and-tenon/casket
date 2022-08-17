@@ -1,6 +1,9 @@
 package fun.mortnon.casket.annotation;
 
+import fun.mortnon.casket.common.Condition;
+import fun.mortnon.casket.common.Logic;
 import fun.mortnon.casket.exception.DaoExtendException;
+import fun.mortnon.casket.extractor.sql.ConditionWrapper;
 import fun.mortnon.casket.operator.SelectOperator;
 import fun.mortnon.casket.orm.BaseEntityOperator;
 import org.apache.commons.lang3.StringUtils;
@@ -9,9 +12,11 @@ import sun.reflect.generics.reflectiveObjects.TypeVariableImpl;
 
 import javax.persistence.Table;
 import javax.sql.DataSource;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -35,17 +40,34 @@ public class CasketInvocationHandler extends AbstractInvocationHandler {
         Operator operatorAnno = daoClass.getAnnotation(Operator.class);
         String tableName = operatorAnno.table();
 
+        List<ConditionWrapper> conditionWrapperList = new ArrayList<>();
+
+        Annotation[][] parameterAnnotations = method.getParameterAnnotations();
+        for (int i = 0; i < parameterAnnotations.length; i++) {
+            for (int j = 0; j < parameterAnnotations[i].length; j++) {
+                Annotation paramAnno = parameterAnnotations[i][j];
+                if (paramAnno instanceof Where) {
+                    Where paramWhere = (Where) paramAnno;
+                    String conditionColumn = paramWhere.column();
+                    Condition condition = paramWhere.operator();
+                    Logic logic = paramWhere.logic();
+
+                    ConditionWrapper wrapper = new ConditionWrapper(conditionColumn, condition, args[i], logic);
+                    conditionWrapperList.add(wrapper);
+                }
+            }
+        }
+
         if (method.isAnnotationPresent(Select.class)) {
             Select selectAnno = method.getAnnotation(Select.class);
-            String conditionColumn = selectAnno.conditionColumn();
-            String[] selectColumns = selectAnno.selectColumns();
+            String[] selectColumns = selectAnno.columns();
 
-            String selectTableName = selectAnno.table();
+            String selectTableName = selectAnno.from();
             if (StringUtils.isNotEmpty(selectTableName)) {
                 tableName = selectTableName;
             }
 
-            fun.mortnon.casket.common.Operator operator = selectAnno.operator();
+
             Class<?> returnClazz = method.getReturnType();
             boolean isList = false;
             if (returnClazz == List.class) {
@@ -70,12 +92,12 @@ public class CasketInvocationHandler extends AbstractInvocationHandler {
 
             tableName = Optional.ofNullable(tableAnno).map(Table::name).orElse(tableName);
 
-            SelectOperator selectOperator = new SelectOperator(dataSource, method, operator);
+            SelectOperator selectOperator = new SelectOperator(dataSource, method, conditionWrapperList);
             if (isList) {
-                return selectOperator.select(conditionColumn, Arrays.asList(args), Arrays.asList(selectColumns), returnClazz, tableName);
+                return selectOperator.select(Arrays.asList(selectColumns), returnClazz, tableName);
             }
 
-            return selectOperator.selectOne(conditionColumn, Arrays.asList(args), Arrays.asList(selectColumns), returnClazz, tableName);
+            return selectOperator.selectOne(Arrays.asList(selectColumns), returnClazz, tableName);
         }
         return null;
     }

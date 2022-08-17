@@ -14,6 +14,6 @@ public class DbException extends RuntimeException {
     }
 
     public static void sqlError(Throwable cause) {
-        throw new DbException("the method parameters are not match the @Select conditionColumn count.", cause);
+        throw new DbException("check the method parameters are not match the @Select conditionColumn count or the cause exception.", cause);
     }
 }

@@ -6,10 +6,7 @@ import fun.mortnon.casket.extractor.sql.BoundSql;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.List;
 
 /**
@@ -35,7 +32,7 @@ public class DatabaseExecutor {
     }
 
 
-    public ResultSet select(BoundSql sql) {
+    public ResultSet select(BoundSql sql) throws SQLException {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(sql.getSql());
             List<Object> parameters = sql.getParameters();

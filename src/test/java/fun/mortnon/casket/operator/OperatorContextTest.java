@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -36,7 +37,7 @@ class OperatorContextTest {
         List<User> haha = userDAO.select("haha");
         assertEquals(0, haha.size());
 
-        List<User> awu = userDAO.select("1");
+        List<User> awu = userDAO.select("awu");
         assertEquals(1, awu.size());
         assertEquals("awu", awu.get(0).getName());
     }
@@ -85,5 +86,20 @@ class OperatorContextTest {
         assertThrows(DbException.class, () -> userDAO.selectWrong("awu"));
     }
 
+
+    @Test
+    public void testSelectIn() {
+        List<String> names = new ArrayList<>();
+        names.add("awu");
+        names.add("bob");
+        List<User> users = userDAO.selectByName(names);
+        assertEquals(2, users.size());
+    }
+
+    @Test
+    public void testSelectMulti() {
+        List<User> awu = userDAO.selectMultiCondition("awu", 1);
+        assertEquals(1, awu.size());
+    }
 
 }

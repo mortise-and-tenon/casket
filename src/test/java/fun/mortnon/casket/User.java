@@ -1,6 +1,10 @@
 package fun.mortnon.casket;
 
 
+import org.springframework.stereotype.Controller;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.Table;
 
 /**

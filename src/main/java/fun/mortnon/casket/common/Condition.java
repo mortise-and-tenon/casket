@@ -4,7 +4,7 @@ package fun.mortnon.casket.common;
  * @author Moon Wu
  * @date 2022/7/25
  */
-public enum Operator {
+public enum Condition {
     Equal("="),
     NotEqual("<>"),
     In("IN"),
@@ -12,7 +12,7 @@ public enum Operator {
 
     private String descriptor;
 
-    Operator(String descriptor) {
+    Condition(String descriptor) {
         this.descriptor = descriptor;
     }
 

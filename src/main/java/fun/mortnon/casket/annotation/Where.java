@@ -1,35 +1,30 @@
 package fun.mortnon.casket.annotation;
 
-
 import fun.mortnon.casket.common.Condition;
+import fun.mortnon.casket.common.Logic;
 
 import java.lang.annotation.*;
 
-/**
- * @author Moon Wu
- * @date 2022/7/25
- */
 @Documented
-@Target({ElementType.METHOD})
+@Target({ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Select {
-
+public @interface Where {
     /**
-     * 用于返回非实体的结果列名，优先级高于函数返回值
+     * 与前一个条件的逻辑关系
      *
      * @return
      */
-    String[] columns() default "";
+    Logic logic() default Logic.AND;
 
     /**
-     * 查询的表名
+     * 条件匹配的列名
      *
      * @return
      */
-    String from() default "";
+    String column();
 
     /**
-     * 查询条件
+     * 匹配条件
      *
      * @return
      */
